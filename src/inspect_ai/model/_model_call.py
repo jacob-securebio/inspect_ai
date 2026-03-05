@@ -18,6 +18,8 @@ def as_error_response(body: object | None) -> dict[str, JsonValue]:
             return {"body": parsed}
         except json.JSONDecodeError:
             return {"body": body}
+    if isinstance(body, BaseModel):
+        return cast(dict[str, JsonValue], body.model_dump(warnings=False))
     return {"body": jsonable_python(body)}
 
 

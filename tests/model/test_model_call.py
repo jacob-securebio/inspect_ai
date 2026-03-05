@@ -1,6 +1,12 @@
 import pytest
+from pydantic import BaseModel
 
 from inspect_ai.model._model_call import as_error_response
+
+
+class _SimpleModel(BaseModel):
+    message: str
+    code: int
 
 
 @pytest.mark.parametrize(
@@ -10,6 +16,11 @@ from inspect_ai.model._model_call import as_error_response
             {"error": {"message": "test", "code": 400}},
             {"error": {"message": "test", "code": 400}},
             id="dict_returned_as_is",
+        ),
+        pytest.param(
+            _SimpleModel(message="test", code=400),
+            {"message": "test", "code": 400},
+            id="base_model_dumped",
         ),
         pytest.param(
             '{"error": {"message": "test"}}',
